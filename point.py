@@ -15,28 +15,28 @@ class Point:
     def __eq__(self, other):
         if isinstance(other, Point):
             return self.x==other.x and self.y==other.y
+        raise NotImplementedError
 
     def __ne__(self, other):
-        result = self.__eq__(other)
-        if result is NotImplemented:
-            return result
-        return not result
+        return not self.__eq__(other)
 
     def __lt__(self, other):
+        """ A<B if any A[n] < B[n] """
         if isinstance(other, Point): 
-            if self.x<other.x: 
+            if self.x<other.x and self.y<other.y:
                 return True 
-            elif self.x==other.x and self.y<other.y: 
-                return True 
-            return False
+            elif self.x>other.x and self.y>other.y:
+                return False
+            raise NotImplementedError
 
     def __gt__(self, other):
+        """ A>B if any A[n] > B[n] """
         if isinstance(other, Point): 
-            if self.x>other.x:
+            if self.x>other.x and self.y>other.y:
                 return True
-            elif self.x==other.x and self.y>other.y:
-                return True
-            return False
+            elif self.x<other.x and self.y<other.y:
+                return False
+            raise NotImplementedError
                 
         
     def __ge__(self, other):
@@ -60,6 +60,7 @@ class Point:
             return "({0},{1})".format(self.x,self.y)
         else:
             return "({0:.1f}, {1:.1f})".format(self.x,self.y)
+
     def __repr__(self):
         if type(self.x) is int and type(self.y) is int:
             return "({0},{1})".format(self.x,self.y)
