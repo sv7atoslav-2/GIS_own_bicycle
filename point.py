@@ -47,22 +47,16 @@ class Point:
         return NotImplemented if eq_result is NotImplemented else not eq_result
 
     def __lt__(self, other):
-        """ A<B if any A[n] < B[n] """
-        if isinstance(other, Point): 
-            if self.x<other.x and self.y<other.y:
-                return True 
-            elif self.x>other.x and self.y>other.y:
-                return False
-            return NotImplemented
+        """ A<B if ∀(n): A[n] < B[n] """
+        if isinstance(other, Point) or check_container(other, len(self)):
+            return all(self[n] < other[n] for n in range(len(self)))
+        return NotImplemented
 
     def __gt__(self, other):
-        """ A>B if any A[n] > B[n] """
-        if isinstance(other, Point): 
-            if self.x>other.x and self.y>other.y:
-                return True
-            elif self.x<other.x and self.y<other.y:
-                return False
-            return NotImplemented
+        """ A>B if ∀(n): A[n] > B[n] """
+        if isinstance(other, Point) or check_container(other, len(self)):
+            return all(self[n] > other[n] for n in range(len(self)))
+        return NotImplemented
                 
         
     def __ge__(self, other):
