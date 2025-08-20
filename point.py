@@ -1,4 +1,28 @@
+# from typing import Iterable, Any, Sized
 from math import sqrt
+
+
+def check_container(container: {len,iter }, target_size:int=0) -> bool:
+    """
+    Check if container is iterable, support __len__, and every value is not None.
+    Optionally can check size.
+
+    :parameter container target for checks
+    :parameter target_size get False if len() not equal to this value, but ignored if 0
+
+    :return result of checks
+    """
+    try:
+        iter(container)
+        if target_size != 0 and len(container) !=target_size:
+            return False
+        for n in range(len(container)):
+            if container[n] is None:
+                return False
+    except TypeError:
+        return False
+
+    return True
 
 class Point:
     def __init__(self, x=None, y=None):
@@ -12,10 +36,15 @@ class Point:
     def __len__(self):
         return 2
 
-    def __eq__(self, other):
-        if isinstance(other, Point):
-            return self.x==other.x and self.y==other.y
-        raise NotImplementedError
+    def __eq__(self, other: {__len__, __getitem__ }) -> bool:
+        """ A=B if ∀(n): A[n] = B[n] """
+        if isinstance(other, Point) or check_container(other, len(self)):
+            for n in range(len(self)):
+                if self[n] != other[n]:
+                    return False
+            return True
+
+        return NotImplemented
 
     def __ne__(self, other):
         return not self.__eq__(other)
