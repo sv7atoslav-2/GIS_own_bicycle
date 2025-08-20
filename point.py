@@ -72,16 +72,20 @@ class Point:
         return self < other or self == other if isinstance(other, Point) else False
 
     def __str__(self):
-        if isinstance(self.x, int) and isinstance(self.y, int):
-            return f"({self.x},{self.y})"
-        else:
-            return f"({self.x:.1f}, {self.y:.1f})"
+        result="P("
+        for n in range(len(self)):
+            result += f"{str(self[n])};"
+        result=result[:-1] # remove last ";"
+        result +=")"
+        return result
 
     def __repr__(self):
-        if isinstance(self.x, int) and isinstance(self.y, int):
-            return f"({self.x},{self.y})"
-        else:
-            return f"({self.x:.1f}, {self.y:.1f})"
+        result = "P("
+        for n in range(len(self)):
+            result += f"{self[n]=};"
+        result = result[:-1]  # remove last ";"
+        result += ")"
+        return result
 
     def distance(self, other):
         return sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
