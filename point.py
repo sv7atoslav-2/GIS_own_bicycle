@@ -1,8 +1,8 @@
-# from typing import Iterable, Any, Sized
+from typing import Iterable, Sized
 from math import sqrt
 
 
-def check_container(container: {len,iter }, target_size:int=0) -> bool:
+def check_container(container: {Iterable, Sized }, target_size:int=0) -> bool:
     """
     Check if container is iterable, support __len__, and every value is not None.
     Optionally can check size.
@@ -31,23 +31,20 @@ class Point:
     def __getitem__(self, i):
         if i==0: return self.x
         if i==1: return self.y
-        return None
+        raise IndexError("Point index out of range")
 
     def __len__(self):
         return 2
 
-    def __eq__(self, other: {__len__, __getitem__ }) -> bool:
+    def __eq__(self, other: {Iterable, Sized }) -> bool:
         """ A=B if ∀(n): A[n] = B[n] """
         if isinstance(other, Point) or check_container(other, len(self)):
-            for n in range(len(self)):
-                if self[n] != other[n]:
-                    return False
-            return True
-
+            return all(self[n] == other[n] for n in range(len(self)))
         return NotImplemented
 
     def __ne__(self, other):
-        return not self.__eq__(other)
+        eq_result = self.__eq__(other)
+        return NotImplemented if eq_result is NotImplemented else not eq_result
 
     def __lt__(self, other):
         """ A<B if any A[n] < B[n] """
@@ -56,7 +53,7 @@ class Point:
                 return True 
             elif self.x>other.x and self.y>other.y:
                 return False
-            raise NotImplementedError
+            return NotImplemented
 
     def __gt__(self, other):
         """ A>B if any A[n] > B[n] """
@@ -65,36 +62,26 @@ class Point:
                 return True
             elif self.x<other.x and self.y<other.y:
                 return False
-            raise NotImplementedError
+            return NotImplemented
                 
         
     def __ge__(self, other):
-        if isinstance(other, Point):
-            if self > other or self == other:
-                return True
-            else:
-                return False
-        return False
+        return self > other or self == other if isinstance(other, Point) else False
 
     def __le__(self, other):
-        if isinstance(other, Point):
-            if self < other or self == other:
-                return True
-            else:
-                return False
-        return False
+        return self < other or self == other if isinstance(other, Point) else False
 
     def __str__(self):
-        if type(self.x) is int and type(self.y) is int:
-            return "({0},{1})".format(self.x,self.y)
+        if isinstance(self.x, int) and isinstance(self.y, int):
+            return f"({self.x},{self.y})"
         else:
-            return "({0:.1f}, {1:.1f})".format(self.x,self.y)
+            return f"({self.x:.1f}, {self.y:.1f})"
 
     def __repr__(self):
-        if type(self.x) is int and type(self.y) is int:
-            return "({0},{1})".format(self.x,self.y)
+        if isinstance(self.x, int) and isinstance(self.y, int):
+            return f"({self.x},{self.y})"
         else:
-            return "({0:.1f}, {1:.1f})".format(self.x,self.y)
+            return f"({self.x:.1f}, {self.y:.1f})"
 
     def distance(self, other):
         return sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
